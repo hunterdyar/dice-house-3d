@@ -1,37 +1,96 @@
-import logo from "./logo.svg";
-import "./App.css";
+import DiceChoiceTable from './DiceChoiceTable.js';
+import {Container, Typography} from "@mui/material";
+//
+import DisplayResults from "@3d-dice/dice-ui/src/displayResults"; // fui index exports are messed up -> going to src
+import DiceParser from "@3d-dice/dice-parser-interface";
+import { Dice } from "./components/diceBox";
+import './App.css';
+import {useEffect, useState} from "react";
+import RollResult from "./RollResult";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React from "react";
+import {RollResultDisplay, DiceResult} from "./RollResult";
 
-import { io } from "socket.io-client";
-
-const socket = io("ws://localhost:3001", {
-  reconnectionDelayMax: 10000,
-  auth: {
-    token: "123",
-  },
-  query: {
-    "my-key": "my-value",
-  },
+const darkTheme = createTheme({
+    palette: {
+        mode: 'light',
+    },
+});
+// create Dice Roll Parser to handle complex notations
+const DRP = new DiceParser();
+// create display overlay for final results
+const DiceResults = new DisplayResults("#dice-box");
+// initialize the Dice Box outside of the component
+Dice.init().then(() => {
+    Dice.updateConfig({
+        scale: 4,
+        enableShadows: true,
+        shadowOpacity: 0.6,
+        delay:10,
+        theme: 'default',
+        themeColor: "#492563",
+    });
+    // clear dice on click anywhere on the screen
+    window.addEventListener("mousedown", () => {
+        const diceBoxCanvas = document.getElementById("dice-canvas");
+        if (window.getComputedStyle(diceBoxCanvas).display !== "none") {
+            Dice.hide().clear();
+            DiceResults.clear();
+        }
+    });
 });
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+// trigger dice roll
+const rollDice = (notation, group) => {
+    // trigger the dice roll using the parser
+    Dice.show().roll(DRP.parseNotation(notation));
+};
+let rollCompleteListener;
+Dice.onRollComplete = (results) => {
+    // handle any rerolls
+    const rerolls = DRP.handleRerolls(results);
+    if (rerolls.length) {
+        rerolls.forEach((roll) => Dice.add(roll, roll.groupId));
+        return rerolls;
+    }
+
+    // if no re-rolls needed then parse the final results
+    let finalResults = DRP.parseFinalResults(results);
+
+    // show the results in the popup from Dice-UI
+    DiceResults.showResults(finalResults);
+
+    //Show the results in the App RollResult
+    if(rollCompleteListener)
+    {
+        rollCompleteListener(new DiceResult(finalResults));
+    }
+    // console.log(finalResults);
+};
+
+export default function App() {
+    const [parsedResult, setParsedResult] = useState({});
+    //const [results, setResults] = useState({});
+    useEffect(() => {
+        rollCompleteListener = setParsedResult;
+
+        //cleanup
+        return () => {
+            rollCompleteListener = false;
+        }
+    }, [setParsedResult]);
+
+    //Todo: This is getting called twice.
+    console.log("find breakpoint lol");
+    //todo: Theme provider to theme entire page.
+    return (
+      <Container className="App">
+          <header className="App-header">
+            <Typography variant="h1">Dice House</Typography>
+          </header>
+          <DiceChoiceTable onRoll={rollDice}/>
+          <RollResultDisplay result={parsedResult} />
+      </Container>
+
   );
 }
-
-export default App;
