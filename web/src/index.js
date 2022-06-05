@@ -11,6 +11,18 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+import { io } from "socket.io-client";
+
+const socket = io("ws://localhost:3001", {
+  reconnectionDelayMax: 10000,
+  auth: {
+    token: "123",
+  },
+  query: {
+    "my-key": "my-value",
+  },
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
