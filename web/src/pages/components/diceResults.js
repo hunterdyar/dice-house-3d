@@ -1,6 +1,8 @@
 import React from "react";
 
-const DiceResults = () => {
-    return <div>TODO: Dice Results</div>
+const DiceResults = ({results}) => {
+    return results.map((result, index) => {
+        return <div key={`${result}-${index}`}>{result}</div>
+    });
 }
 export default DiceResults;
