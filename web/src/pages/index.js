@@ -21,8 +21,9 @@ function Pages() {
     <Routes>
         <Route path="/" element={<Layout/>}>
             <Route index element={<Landing/>}/>
-            <Route path=":roomId" element={<StandardPage/>}>
-                <Route path="obs" elemtn={<DisplayOnly/>}/>
+            <Route path=":roomId">
+                <Route index element={<StandardPage/>}/>
+                <Route path="obs" element={<DisplayOnly/>}/>
             </Route>
         </Route>
     </Routes>
