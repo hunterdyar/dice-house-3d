@@ -10,6 +10,7 @@ import RollResult from "./RollResult";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from "react";
 import {RollResultDisplay, DiceResult} from "./RollResult";
+import RollHistoryList from "./rollHistorylist";
 
 const darkTheme = createTheme({
     palette: {
@@ -43,7 +44,9 @@ Dice.init().then(() => {
 // trigger dice roll
 const rollDice = (notation, group) => {
     // trigger the dice roll using the parser
-    Dice.show().roll(DRP.parseNotation(notation));
+    let parsedNotation = DRP.parseNotation(notation);
+    Dice.show().roll(parsedNotation);
+    console.log(notation,parsedNotation);
 };
 let rollCompleteListener;
 Dice.onRollComplete = (results) => {
@@ -54,9 +57,8 @@ Dice.onRollComplete = (results) => {
         return rerolls;
     }
 
-    // if no re-rolls needed then parse the final results
-    let finalResults = DRP.parseFinalResults(results);
-
+  // if no re-rolls needed then parse the final results
+  let finalResults = DRP.parseFinalResults(results);
     // show the results in the popup from Dice-UI
     DiceResults.showResults(finalResults);
 
@@ -90,7 +92,7 @@ export default function App() {
           </header>
           <DiceChoiceTable onRoll={rollDice}/>
           <RollResultDisplay result={parsedResult} />
+        <RollHistoryList />
       </Container>
-
   );
 }
