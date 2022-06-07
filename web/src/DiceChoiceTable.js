@@ -13,7 +13,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import GridOnIcon from '@mui/icons-material/GridOn';
 
 function createDiceRow(
-    name: string,    sides: number, sVal: string) {
+    name, sides, sVal) {
     return { name, sides, sVal:""};
 }
 
@@ -239,8 +239,6 @@ class DiceRow extends React.Component
                         </TableRow>
                     </TableFooter>
                 </Table>
-
-
             </TableContainer>
         </Box>
     }

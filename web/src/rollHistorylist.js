@@ -1,9 +1,10 @@
-import {Container, List, ListItemText} from "@mui/material";
+import {Box, Container, List, ListItemText} from "@mui/material";
 import Button from "@mui/material/Button";
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import CircleIcon from '@mui/icons-material/Circle';
 import {ListSubheader} from "@mui/material";
+import Paper from "@mui/material/Paper";
 
 
 export default function RollHistoryList(props)
@@ -16,7 +17,11 @@ export default function RollHistoryList(props)
 
   ];
   return(
-    <Container>
+    <Box
+      sx={{
+        width: 400,
+      }}>
+    <Paper elevation={1}>
     <List
       sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       subheader={<ListSubheader>Roll History</ListSubheader>}
@@ -33,7 +38,8 @@ export default function RollHistoryList(props)
 
       }
     </List>
-    </Container>
+    </Paper>
+    </Box>
   );
 }
 

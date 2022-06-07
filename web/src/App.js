@@ -1,5 +1,5 @@
 import DiceChoiceTable from './DiceChoiceTable.js';
-import {Container, Typography} from "@mui/material";
+import {Container, Grid, Typography} from "@mui/material";
 //
 import DisplayResults from "@3d-dice/dice-ui/src/displayResults"; // fui index exports are messed up -> going to src
 import DiceParser from "@3d-dice/dice-parser-interface";
@@ -87,12 +87,20 @@ export default function App() {
     //todo: Theme provider to theme entire page.
     return (
       <Container className="App">
-          <header className="App-header">
-            <Typography variant="h1">Dice House</Typography>
-          </header>
-          <DiceChoiceTable onRoll={rollDice}/>
-          <RollResultDisplay result={parsedResult} />
-        <RollHistoryList />
+        <Grid container>
+          <Grid item xs={12}>
+            <header className="App-header">
+              <Typography variant="h1">Dice House</Typography>
+            </header>
+          </Grid>
+          <Grid item xs={6}>
+            <DiceChoiceTable onRoll={rollDice}/>
+            <RollResultDisplay result={parsedResult} />
+          </Grid>
+          <Grid item xs={6}>
+            <RollHistoryList />
+          </Grid>
+          </Grid>
       </Container>
   );
 }
