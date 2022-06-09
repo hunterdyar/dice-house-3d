@@ -71,36 +71,37 @@ Dice.onRollComplete = (results) => {
 };
 
 export default function App() {
-    const [parsedResult, setParsedResult] = useState({});
-    //const [results, setResults] = useState({});
-    useEffect(() => {
-        rollCompleteListener = setParsedResult;
+  const [parsedResult, setParsedResult] = useState({});
+  //const [results, setResults] = useState({});
+  useEffect(() => {
+    rollCompleteListener = setParsedResult;
 
-        //cleanup
-        return () => {
-            rollCompleteListener = false;
-        }
-    }, [setParsedResult]);
+    //cleanup
+    return () => {
+      rollCompleteListener = false;
+    }
+  }, [setParsedResult]);
 
-    //Todo: This is getting called twice.
-    console.log("find breakpoint lol");
-    //todo: Theme provider to theme entire page.
-    return (
-      <Container className="App">
-        <Grid container>
-          <Grid item xs={12}>
-            <header className="App-header">
-              <Typography variant="h1">Dice House</Typography>
-            </header>
-          </Grid>
-          <Grid item xs={6}>
-            <DiceChoiceTable onRoll={rollDice}/>
-            <RollResultDisplay result={parsedResult} />
-          </Grid>
-          <Grid item xs={6}>
-            <RollHistoryList />
-          </Grid>
-          </Grid>
-      </Container>
+  //Todo: This is getting called twice.
+  console.log("find breakpoint lol");
+  //todo: Theme provider to theme entire page.
+  return (
+    <Container className="App">
+      <Grid container>
+        <Grid item xs={12}>
+          <header className="App-header">
+            <Typography variant="h1">Dice House</Typography>
+          </header>
+        </Grid>
+        <Grid item xs={6}>
+          <DiceChoiceTable onRoll={rollDice}/>
+          <RollResultDisplay result={parsedResult}/>
+        </Grid>
+        <Grid item xs={6}>
+          <RollHistoryList/>
+        </Grid>
+      </Grid>
+      {/*<RollResultDialogue result={parsedResult}/>*/}
+    </Container>
   );
 }

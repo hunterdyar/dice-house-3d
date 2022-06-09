@@ -128,6 +128,7 @@ class DiceRow extends React.Component
             <ButtonCell sides={this.props.sides} value="2" onSelect={this.newAmountSelected} showSelected={this.showSelected}>2</ButtonCell>
             <ButtonCell sides={this.props.sides} value="3" onSelect={this.newAmountSelected} showSelected={this.showSelected}>3</ButtonCell>
             <ButtonCell sides={this.props.sides} value="4" onSelect={this.newAmountSelected} showSelected={this.showSelected}>4</ButtonCell>
+            {/*todo: Padding on last cell, or margin of container?*/}
             <ButtonCell sides={this.props.sides} value="5" onSelect={this.newAmountSelected} showSelected={this.showSelected}>5</ButtonCell>
             {/*Todo: Custom Input*/}
             {/*todo: With Advantage?*/}

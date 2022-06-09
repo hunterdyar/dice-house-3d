@@ -10,10 +10,10 @@ import Paper from "@mui/material/Paper";
 export default function RollHistoryList(props)
 {
   const elements = [
-    {total: 10, rollString: "2d6"},
-    {total: 10, rollString: "10d5"},
-    {total: 99, rollString: "1d100"},
-    {total: 19, rollString: "1d20kh+4"}
+    {id:"a", total: 10, rollString: "2d6"},
+    {id:"b",total: 10, rollString: "10d5"},
+    {id:"c",total: 99, rollString: "1d100"},
+    {id:"d",total: 19, rollString: "1d20kh+4"}
 
   ];
   return(
@@ -54,7 +54,8 @@ function reRollHistory(rollString)
 function RollHistoryListItem(item)
 {
   return (
-    <ListItem>
+    //Todo I think key should be in the .map function?
+    <ListItem key={item.id}>
       <ListItemIcon>
         <CircleIcon />
       </ListItemIcon>
