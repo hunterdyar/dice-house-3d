@@ -6,8 +6,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {Box, Input, TextField, TableFooter, Collapse, IconButton} from "@mui/material";
-import React from 'react';
 import Button from '@mui/material/Button';
+import React from 'react';
+
 //icons
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import GridOnIcon from '@mui/icons-material/GridOn';
@@ -136,36 +137,24 @@ class DiceRow extends React.Component
         </TableRow>
     }
 }
- class DiceTable extends React.Component
+ class DiceChoiceTable extends React.Component
  {
      constructor(props) {
          super(props);
          this.state = {
-             results: props.results,
-             open:true,
-             onRoll: props.onRoll,
-             diceString: "",
-             textInput: false
+           results: props.results,
+           onRoll: props.onRoll,
+           setDiceString: props.setDiceString
          };
-         this.rollClicked = this.rollClicked.bind(this);
          this.handleChange = this.handleChange.bind(this);
-         this.textInputChange = this.textInputChange.bind(this);
-         this.setOpen = this.setOpen.bind(this);
+         this.setDice = this.setDice.bind(this);
      }
+     setDice(s)
+      {
+        console.log("trying to set string to "+s);
+        this.state.setDiceString(s);
+      }
 
-     rollClicked()
-     {
-         //check for empty string.
-         if(this.state.diceString != "") {
-             this.state.onRoll(this.state.diceString);
-         }
-     }
-     textInputChange(e){
-         this.setState({
-             textInput: true,
-             diceString: e.target.value
-         });
-     }
      handleChange(sides,val){
          let total = "";
          for(let i =0;i<rows.length;i++)
@@ -180,44 +169,16 @@ class DiceRow extends React.Component
              }
              total = total +  rows[i].sVal;
          }
-         this.setState({
-             textInput: false,
-             diceString: total,
-         })
+         this.setDice(total);
+         // this.state.setDiceString(total);
+         // this.setState({
+         //     textInput: false,
+         //     diceString: total,
+         // })
      }
-     setOpen(o){
-        this.setState({
-            open: o
-        })
-    }
 
-
-    render () {
-        return <Box
-            sx={{
-                width: 400,
-            }}>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 400}} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell colSpan={1}>
-                                <IconButton
-                                    aria-label="expand row"
-                                    size="small"
-                                    onClick={() => this.setOpen(!this.state.open)}
-                                >
-                                    {(this.state.open == true) ? <KeyboardArrowUpIcon /> : <GridOnIcon />}
-                                </IconButton>
-                            </TableCell>
-                            <TableCell colSpan={5}>
-                                <TextField value={this.state.diceString} onChange={this.textInputChange} label="Dice Input" size="small" fullWidth={true} color={(this.state.textInput == true) ? "secondary" : ""}></TextField>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                </Table>
-                <Collapse in={this.state.open}>
-                <Table>
+    render (){
+        return <Table>
                     <TableBody>
                         {rows.map((row) => (
                             <DiceRow key={row.name} name={row.name} sides={row.sides} onChange={this.handleChange}></DiceRow>
@@ -225,32 +186,7 @@ class DiceRow extends React.Component
                         {/*//todo: Clear table button, set every row value to 0.*/}
                     </TableBody>
                 </Table>
-                </Collapse>
-                <Table>
-                    <TableFooter>
-                        <TableRow>
-                            <TableCell colSpan = {6}>
-                                <Button onClick={this.rollClicked} fullWidth={true} variant={"contained"}>Roll!</Button>
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell colSpan = {6}>
-                                <h2>{this.state.results}</h2>
-                            </TableCell>
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
-        </Box>
     }
 }
-function Roll(ds)
-{
-    console.log(ds);
-}
-export default function DiceChoiceTable(params)
-{
-    return (
-        <DiceTable onRoll={params.onRoll} results={params.results}/>
-    )
-}
+
+export default DiceChoiceTable;

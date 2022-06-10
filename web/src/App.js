@@ -1,4 +1,4 @@
-import DiceChoiceTable from './DiceChoiceTable.js';
+import DiceChoiceTable from './components/diceSelection/DiceChoiceTable.js';
 import {Container, Grid, Typography} from "@mui/material";
 //
 import DisplayResults from "@3d-dice/dice-ui/src/displayResults"; // fui index exports are messed up -> going to src
@@ -11,6 +11,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from "react";
 import {RollResultDisplay, DiceResult} from "./RollResult";
 import RollHistoryList from "./rollHistorylist";
+import RollTable from "./components/diceSelection/rollTable";
 
 const darkTheme = createTheme({
     palette: {
@@ -94,7 +95,7 @@ export default function App() {
           </header>
         </Grid>
         <Grid item xs={6}>
-          <DiceChoiceTable onRoll={rollDice}/>
+          <RollTable roll={rollDice}/>
           <RollResultDisplay result={parsedResult}/>
         </Grid>
         <Grid item xs={6}>
