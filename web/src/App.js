@@ -22,7 +22,7 @@ const darkTheme = createTheme({
 const DRP = new DiceParser();
 // create display overlay for final results
 const DiceResults = new DisplayResults("#dice-box");
-// initialize the Dice Box outside of the component
+
 Dice.init().then(() => {
     Dice.updateConfig({
         scale: 4,
@@ -63,10 +63,15 @@ Dice.onRollComplete = (results) => {
     // show the results in the popup from Dice-UI
     DiceResults.showResults(finalResults);
 
+    //this is OUR parsed data, the DiceResult class. This is what we want to work with and send over sockets.
+    let result = new DiceResult(finalResults);
+
+    //Todo: Send it over sockets.
+
     //Show the results in the App RollResult
     if(rollCompleteListener)
     {
-        rollCompleteListener(new DiceResult(finalResults));
+        rollCompleteListener(result);
     }
     // console.log(finalResults);
 };
@@ -76,7 +81,6 @@ export default function App() {
   //const [results, setResults] = useState({});
   useEffect(() => {
     rollCompleteListener = setParsedResult;
-
     //cleanup
     return () => {
       rollCompleteListener = false;
