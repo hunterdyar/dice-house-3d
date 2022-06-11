@@ -33,7 +33,6 @@ io.on('connection', function(socket){
     let roomName = q.room;
     if(roomName === "") {
         roomName = newRandomLobbyName();
-
     }
     console.log("created new random room name: "+roomName);
 
@@ -63,6 +62,7 @@ io.on('connection', function(socket){
     });
     socket.on("roll",function(data)
     {
+        console.log("roll in "+data.room);
         socket.in(data.room).emit("otherRoll",data);
     });
     socket.on("updateForm",function(entryData)
@@ -70,7 +70,6 @@ io.on('connection', function(socket){
         socket.in(entryData.room).emit("otherForm",entryData);
     });
 });
-
 
 io.listen(port);
 

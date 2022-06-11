@@ -5,18 +5,21 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import CircleIcon from '@mui/icons-material/Circle';
 import {ListSubheader} from "@mui/material";
 import Paper from "@mui/material/Paper";
-
+import {GetHistoryHooks} from "../../roomLogic/diceEvents";
+import {RollResultDisplay} from "../RollResult";
+import {rollDice} from "../../roomLogic/diceEvents";
 
 export default function RollHistoryList(props)
 {
-  const elements = [
-    {id:"a", total: 10, rollString: "2d6"},
-    {id:"b",total: 10, rollString: "10d5"},
-    {id:"c",total: 99, rollString: "1d100"},
-    {id:"d",total: 19, rollString: "1d20kh+4"}
+  const [history,setHistory] = GetHistoryHooks();
 
-  ];
-  return(
+  const renderSet = [];
+  history.forEach(value => {
+    renderSet.push(<RollHistoryListItem key={value.id} result={value} />);
+  })
+
+
+    return(
     <Box
       sx={{
         width: 400,
@@ -32,40 +35,38 @@ export default function RollHistoryList(props)
         {/*</ListItemIcon>*/}
         <ListItemText id="switch-list-label-wifi" primary="Roll History" />
       </ListItem>
-      {elements.map((item)=>{
-        return RollHistoryListItem(item)
-      })
-
-      }
+      {renderSet}
     </List>
     </Paper>
     </Box>
   );
 }
 
+
 function reRollHistory(rollString)
 {
   //in this file, need to access const from other file...
-
-  console.log("re roll roll string.")
+  console.log("reroll: "+rollString)
+  rollDice(rollString);
   // App.rollDice(rollString);
 }
 
-function RollHistoryListItem(item)
+function RollHistoryListItem({result: item})
 {
+
   return (
-    //Todo I think key should be in the .map function?
-    <ListItem key={item.id}>
+    <ListItem>
       <ListItemIcon>
-        <CircleIcon />
+        <CircleIcon/>
       </ListItemIcon>
-      <ListItemText id="switch-list-label-bluetooth" primary={item.total}  />
-      {/*//I would like it if the button looked less like a button, just on hover.*/}
-      <ListItemText secondary={item.rollString} onClick={reRollHistory(item.rollString)} />
+      <ListItemText >
+        <RollResultDisplay result={item}/>
+      </ListItemText>
+      {/*Todo: shouldn't be a button, should be a hover that changes the text to a dice string*/}
       <Button
         edge="end"
-        onClick = {reRollHistory(item.rollString)}
-      >Re-Roll {item.rollString}</Button>
+        onClick = {() => reRollHistory(item.diceString)}
+      >Re-Roll {item.diceString}</Button>
     </ListItem>
   );
 }

@@ -51,6 +51,7 @@ export class DiceResult
         }
         return t;
     }
+    //todo: we dont have to? its handled for us... we get "duck types" from the network deserialization json->object
     //Network Deserialization. Makes object from json from network.
     fromObject(obj)
     {
@@ -140,7 +141,6 @@ function rollToPart(roll)
 
 export function RollResultDisplay({result = {}})
 {
-    console.log("rendering roll result display.",result);
     const {parts = [],total = 0} = result;//wtf is this backwards syntax for default values.
     let lastIndex = parts.length-1;
     if(parts.length !== 0) {

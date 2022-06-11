@@ -1,10 +1,6 @@
 
 //Copied from the other project, this stuff is just here for conveninent split-pane reference.
 
-socket.on('otherRoll',function(diceSet){
-  console.log("remote roll");
-  showDice(diceSet);
-})
 
 socket.on('otherForm',function(diceSet){
   console.log("remote form update");

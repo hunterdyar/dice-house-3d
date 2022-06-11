@@ -55,6 +55,7 @@ io.on('connection', function (socket) {
         }
     });
     socket.on("roll", function (data) {
+        console.log("roll in " + data.room);
         socket.in(data.room).emit("otherRoll", data);
     });
     socket.on("updateForm", function (entryData) {

@@ -151,7 +151,6 @@ class DiceRow extends React.Component
      }
      setDice(s)
       {
-        console.log("trying to set string to "+s);
         this.state.setDiceString(s);
       }
 
