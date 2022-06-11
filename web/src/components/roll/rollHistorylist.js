@@ -6,7 +6,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import {ListSubheader} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import {GetHistoryHooks} from "../../roomLogic/diceEvents";
-import {RollResultDisplay} from "../RollResult";
+import {RollResultDisplay} from "./RollResult";
 import {rollDice} from "../../roomLogic/diceEvents";
 
 export default function RollHistoryList(props)
