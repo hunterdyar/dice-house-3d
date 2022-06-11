@@ -1,8 +1,10 @@
-import { Dice } from "../components/diceBox";
+import {useEffect, useState} from "react"; // fui index exports are messed up -> going to src
 import DiceParser from "@3d-dice/dice-parser-interface";
 import DisplayResults from "@3d-dice/dice-ui/src/displayResults";
+
 import {DiceResult} from "../components/RollResult";
-import {useEffect, useState} from "react"; // fui index exports are messed up -> going to src
+
+import {diceBox} from "../utils";
 
 
 const DiceApp = {};
@@ -11,9 +13,7 @@ DiceApp.DiceResults = new DisplayResults("#dice-box");
 DiceApp.rollHistory = new Set();//set cant have duplicates.
 DiceApp.latestLocalString = "";//It's important that this is local only, so it stays in sync between rolls and their respective strings.
 //when does this function run?
-DiceApp.Dice = Dice;
-Dice.init().then(() => {
-  Dice.updateConfig({
+diceBox.init({
     scale: 4,
     enableShadows: true,
     shadowOpacity: 0.6,
@@ -22,15 +22,14 @@ Dice.init().then(() => {
     themeColor: "#492563",
   });
 
-  // clear dice on click anywhere on the screen
-  window.addEventListener("mousedown", () => {
-    const diceBoxCanvas = document.getElementById("dice-canvas");
-    if (window.getComputedStyle(diceBoxCanvas).display !== "none") {
-      Dice.hide().clear();
-      DiceApp.DiceResults.clear();
-    }
-  });
-});
+  // // clear dice on click anywhere on the screen
+  // window.addEventListener("mousedown", () => {
+  //   const diceBoxCanvas = document.getElementById("dice-canvas");
+  //   if (window.getComputedStyle(diceBoxCanvas).display !== "none") {
+  //     Dice.hide().clear();
+  //     DiceApp.DiceResults.clear();
+  //   }
+  // });
 
 export function makeSocketEvents()
 {
