@@ -1,15 +1,13 @@
-import DiceChoiceTable from './DiceChoiceTable.js';
-import {Container, Typography} from "@mui/material";
-//
-import DisplayResults from "@3d-dice/dice-ui/src/displayResults"; // fui index exports are messed up -> going to src
-import DiceParser from "@3d-dice/dice-parser-interface";
-import { Dice } from "./components/diceBox";
+import DiceChoiceTable from './components/diceSelection/DiceChoiceTable.js';
+import {Container, Grid, Typography} from "@mui/material";
 import './App.css';
 import {useEffect, useState} from "react";
-import RollResult from "./RollResult";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from "react";
-import {RollResultDisplay, DiceResult} from "./RollResult";
+import {RollResultDisplay, DiceResult} from "./components/RollResult";
+import RollHistoryList from "./components/rollHistory/rollHistorylist";
+import RollTable from "./components/diceSelection/rollTable";
+import {rollCompleteListener, GetDiceHooks, rollDice} from "./roomLogic/diceEvents";
 
 const darkTheme = createTheme({
     palette: {
@@ -17,80 +15,36 @@ const darkTheme = createTheme({
     },
 });
 // create Dice Roll Parser to handle complex notations
-const DRP = new DiceParser();
 // create display overlay for final results
-const DiceResults = new DisplayResults("#dice-box");
-// initialize the Dice Box outside of the component
-Dice.init().then(() => {
-    Dice.updateConfig({
-        scale: 4,
-        enableShadows: true,
-        shadowOpacity: 0.6,
-        delay:10,
-        theme: 'default',
-        themeColor: "#492563",
-    });
-    // clear dice on click anywhere on the screen
-    window.addEventListener("mousedown", () => {
-        const diceBoxCanvas = document.getElementById("dice-canvas");
-        if (window.getComputedStyle(diceBoxCanvas).display !== "none") {
-            Dice.hide().clear();
-            DiceResults.clear();
-        }
-    });
-});
+
 
 // trigger dice roll
-const rollDice = (notation, group) => {
-    // trigger the dice roll using the parser
-    Dice.show().roll(DRP.parseNotation(notation));
-};
-let rollCompleteListener;
-Dice.onRollComplete = (results) => {
-    // handle any rerolls
-    const rerolls = DRP.handleRerolls(results);
-    if (rerolls.length) {
-        rerolls.forEach((roll) => Dice.add(roll, roll.groupId));
-        return rerolls;
-    }
 
-    // if no re-rolls needed then parse the final results
-    let finalResults = DRP.parseFinalResults(results);
-
-    // show the results in the popup from Dice-UI
-    DiceResults.showResults(finalResults);
-
-    //Show the results in the App RollResult
-    if(rollCompleteListener)
-    {
-        rollCompleteListener(new DiceResult(finalResults));
-    }
     // console.log(finalResults);
-};
 
 export default function App() {
-    const [parsedResult, setParsedResult] = useState({});
-    //const [results, setResults] = useState({});
-    useEffect(() => {
-        rollCompleteListener = setParsedResult;
 
-        //cleanup
-        return () => {
-            rollCompleteListener = false;
-        }
-    }, [setParsedResult]);
+  const [parsedResult, setParsedResult] = GetDiceHooks();
 
-    //Todo: This is getting called twice.
-    console.log("find breakpoint lol");
-    //todo: Theme provider to theme entire page.
-    return (
-      <Container className="App">
+  //Todo: This is getting called twice.
+  //todo: Theme provider to theme entire page.
+  return (
+    <Container className="App">
+      <Grid container>
+        <Grid item xs={12}>
           <header className="App-header">
             <Typography variant="h1">Dice House</Typography>
           </header>
-          <DiceChoiceTable onRoll={rollDice}/>
-          <RollResultDisplay result={parsedResult} />
-      </Container>
-
+        </Grid>
+        <Grid item xs={6}>
+          <RollTable roll={rollDice}/>
+          <RollResultDisplay result={parsedResult}/>
+        </Grid>
+        <Grid item xs={6}>
+          <RollHistoryList/>
+        </Grid>
+      </Grid>
+      {/*<RollResultDialogue result={parsedResult}/>*/}
+    </Container>
   );
 }

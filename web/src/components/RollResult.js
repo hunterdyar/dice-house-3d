@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import RandomGUID from "@3d-dice/dice-box/dist/world.onscreen";
+import Paper from "@mui/material/Paper";
 
 //todo: Export this class, then write the result display components to utilize it. This way we only parse once.
 export class DiceResult
@@ -50,6 +51,7 @@ export class DiceResult
         }
         return t;
     }
+    //todo: we dont have to? its handled for us... we get "duck types" from the network deserialization json->object
     //Network Deserialization. Makes object from json from network.
     fromObject(obj)
     {
@@ -134,14 +136,16 @@ function rollToPart(roll)
     return [];
 }
 
+
+//todo: make a RolLResultDialog for popup
+
 export function RollResultDisplay({result = {}})
 {
-    console.log("rendering roll result display.",result);
     const {parts = [],total = 0} = result;//wtf is this backwards syntax for default values.
     let lastIndex = parts.length-1;
     if(parts.length !== 0) {
         return (
-
+        <Paper>
             <span>
             {parts.map((part, index) => (
                 //todo: generate a key during parsing.
@@ -150,6 +154,7 @@ export function RollResultDisplay({result = {}})
 
                 <span className="dice-total"> = {total}</span>
         </span>
+        </Paper>
         )
     }else{
         return null;

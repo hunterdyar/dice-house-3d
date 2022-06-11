@@ -28,19 +28,17 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', function(socket){
-    console.log(socket.id);
+    console.log("Connection."+socket.id);
     let q = socket.handshake.query;
     let roomName = q.room;
     if(roomName === "") {
         roomName = newRandomLobbyName();
     }
+    console.log("created new random room name: "+roomName);
+
     socket.join(roomName);
     //Send this event to everyone in the room.
     io.in(roomName).emit('connectToRoom', roomName);
-    // //Whenever someone disconnects this piece of code executed
-    // socket.on('disconnect', function () {
-    //   console.log('A user disconnected');
-    // });
 
     socket.on("joinRoom",function(data){
         //todo: check if client is already in room.
@@ -64,6 +62,7 @@ io.on('connection', function(socket){
     });
     socket.on("roll",function(data)
     {
+        console.log("roll in "+data.room);
         socket.in(data.room).emit("otherRoll",data);
     });
     socket.on("updateForm",function(entryData)
@@ -71,7 +70,6 @@ io.on('connection', function(socket){
         socket.in(entryData.room).emit("otherForm",entryData);
     });
 });
-
 
 io.listen(port);
 
@@ -93,7 +91,6 @@ function newRandomLobbyName()
     // }
 
     return n;
-
 }
 
 //todo: move to own file and such.
