@@ -80,27 +80,6 @@ function GetDiceHooks()
   return [parsedResult, setParsedResult];
 }
 
-Dice.onRollComplete = (results) => {
-  // handle any rerolls
-  const rerolls = DiceApp.DRP.handleRerolls(results);
-  if (rerolls.length) {
-    rerolls.forEach((roll) => Dice.add(roll, roll.groupId));
-    return rerolls;
-  }
-  // if no re-rolls needed then parse the final results
-  let finalResults = DiceApp.DRP.parseFinalResults(results);
-
-  // show the results in the popup from Dice-UI
-  // DiceApp.DiceResults.showResults(finalResults);
-
-  //this is OUR parsed data, the DiceResult class. This is what we want to work with and send over sockets.
-  DiceApp.latestResult = new DiceResult(finalResults);
-  //Results data doesn't store the diceString, so we need to inject it here from a saved cache.
-  DiceApp.latestResult.diceString = DiceApp.latestLocalString;
-  AddToHistory(DiceApp.latestResult);
-  emitLatestDiceRoll();
-};
-
 function emitLatestDiceRoll()
 {
   //Inject net-related data.
@@ -124,11 +103,17 @@ function emitLatestDiceRoll()
 }
 
 //do a local roll
-const rollDice = (notation, group) => {
-  // trigger the dice roll using the parser
-  DiceApp.latestLocalString = notation;//We cache this then inject it into the results to hold onto.
-  let parsedNotation = DiceApp.DRP.parseNotation(notation);
-  Dice.show().roll(parsedNotation);
+const rollDice = async (notation, group) => {
+  const finalResults = await diceBox.roll(notation);
+  // show the results in the popup from Dice-UI
+  DiceApp.DiceResults.showResults(finalResults);
+
+  //this is OUR parsed data, the DiceResult class. This is what we want to work with and send over sockets.
+  DiceApp.latestResult = new DiceResult(finalResults);
+  //Results data doesn't store the diceString, so we need to inject it here from a saved cache.
+  DiceApp.latestResult.diceString = DiceApp.latestLocalString;
+  AddToHistory(DiceApp.latestResult);
+  emitLatestDiceRoll();
 };
 
 //function that we call when dice are done being rolled.

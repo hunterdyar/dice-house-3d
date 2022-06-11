@@ -1,4 +1,5 @@
 import DiceBox from "@3d-dice/dice-box";
+import DiceParser from "@3d-dice/dice-parser-interface";
 
 import "./diceBox.css";
 
@@ -6,7 +7,18 @@ let containerElm;
 const containerId = "dice-box-container";
 
 let diceInstance;
+let parser;
 
+const warnFn = () => console.warn("Must init dicebox");
+let output = {
+    updateConfig: warnFn,
+    clear: warnFn,
+    roll: warnFn
+}
+
+let updateConfig = warnFn;
+let clear = warnFn;
+let roll = warnFn;
 export function init(config) {
     if (!containerElm) {
         const existingContainer = document.getElementById(containerId);
@@ -26,29 +38,40 @@ export function init(config) {
     } else {
         diceInstance.updateConfig(config);
     }
-}
-
-export function updateConfig(config) {
-    if (!diceInstance) {
-        console.warn("Must call diceBox.init() first");
-    } else {
+    if (!parser) {
+        parser = new DiceParser();
+    }   
+    
+    updateConfig = function(config) {
         diceInstance.updateConfig(config);
-    }
-}
+    };
 
-export function clear() {
-    if (!diceInstance) {
-        console.warn("Must call diceBox.init() first");
-    } else {
-        diceInstance.hide().clear();
-    }
-}
+    clear = function() {
+diceInstance.hide().clear();
+    };
 
-export function roll(input) {
-    if (!diceInstance) {
-        console.warn("Must call diceBox.init() first");
-    } else {
-        return diceInstance.show().roll(input);
+    // TODO: See if this is correct
+    async function rerollIfNeeded(results) {
+        const rerolls = parser.handleRerolls(results);
+        if (Array.isArray(rerolls) && rerolls.length > 0) {
+            const nextResults = await diceInstance.reroll(rerolls);
+            return rerollIfNeeded(nextResults);
+        }
     }
-}
+
+    roll = async function(input) {
+        const parsed = parser.parseNotation(input);
+        const initialResults = await diceInstance.show().roll(parsed);
+        await rerollIfNeeded(initialResults);
+
+        const finalReults = diceInstance.getRollResults();
+        return parser.parseFinalResults(finalReults);
+    }
+};
+
+export {
+    updateConfig,
+    clear,
+    roll
+};
 
