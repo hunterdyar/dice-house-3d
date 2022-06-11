@@ -4,10 +4,11 @@ import './App.css';
 import {useEffect, useState} from "react";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from "react";
-import {RollResultDisplay, DiceResult} from "./components/RollResult";
-import RollHistoryList from "./components/rollHistory/rollHistorylist";
+import {RollResultDisplay, DiceResult} from "./components/roll/RollResult";
+import RollHistoryList from "./components/roll/rollHistorylist";
 import RollTable from "./components/diceSelection/rollTable";
 import {rollCompleteListener, GetDiceHooks, rollDice} from "./roomLogic/diceEvents";
+import RollResultDialogue from "./components/roll/rollDialogue";
 
 const darkTheme = createTheme({
     palette: {
@@ -16,11 +17,6 @@ const darkTheme = createTheme({
 });
 // create Dice Roll Parser to handle complex notations
 // create display overlay for final results
-
-
-// trigger dice roll
-
-    // console.log(finalResults);
 
 export default function App() {
 
@@ -44,7 +40,7 @@ export default function App() {
           <RollHistoryList/>
         </Grid>
       </Grid>
-      {/*<RollResultDialogue result={parsedResult}/>*/}
+      <RollResultDialogue result={parsedResult}/>
     </Container>
   );
 }
